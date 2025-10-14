@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 // API base URL configuration
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://api.evconnects.com' 
-  : 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production'
+    ? 'https://api.evconnects.com' 
+    : 'http://localhost:3000/api');
 
 // Create axios instance with default config
 const api = axios.create({
@@ -27,24 +28,24 @@ api.interceptors.request.use(
 
 // Station related API calls
 export const stationService = {
-  getAllStations: () => api.get('/api/stations'),
-  getStationById: (id) => api.get(`/api/stations/${id}`),
+  getAllStations: () => api.get('/stations'),
+  getStationById: (id) => api.get(`/stations/${id}`),
   getNearbyStations: (lat, lng, radius = 10) => 
-    api.get(`/api/stations/nearby?lat=${lat}&lng=${lng}&radius=${radius}`),
+    api.get(`/stations/nearby?lat=${lat}&lng=${lng}&radius=${radius}`),
 };
 
 // Payment related API calls
 export const paymentService = {
-  createPaymentIntent: (amount) => api.post('/api/create-payment-intent', { amount }),
-  getPaymentHistory: () => api.get('/api/payments/history'),
+  createPaymentIntent: (amount) => api.post('/create-payment-intent', { amount }),
+  getPaymentHistory: () => api.get('/payments/history'),
 };
 
 // User related API calls
 export const userService = {
-  login: (credentials) => api.post('/api/auth/login', credentials),
-  register: (userData) => api.post('/api/auth/register', userData),
-  getProfile: () => api.get('/api/user/profile'),
-  updateProfile: (userData) => api.put('/api/user/profile', userData),
+  login: (credentials) => api.post('/auth/login', credentials),
+  register: (userData) => api.post('/auth/register', userData),
+  getProfile: () => api.get('/user/profile'),
+  updateProfile: (userData) => api.put('/user/profile', userData),
 };
 
 export default api;

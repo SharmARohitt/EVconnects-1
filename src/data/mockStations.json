@@ -1,0 +1,165 @@
+{
+  "stations": [
+    {
+      "id": 1,
+      "name": "TATA Power Charging Station",
+      "address": "MG Road, Bengaluru, Karnataka 560001",
+      "location": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "distance": 0.5,
+      "isAvailable": true,
+      "chargerTypes": ["CCS", "CHAdeMO", "Type 2 AC"],
+      "totalChargers": 6,
+      "availableChargers": 4,
+      "pricing": {
+        "CCS": 120,
+        "CHAdeMO": 150,
+        "Type 2 AC": 80
+      },
+      "averageWaitTime": 15,
+      "peakHours": [8, 9, 18, 19, 20],
+      "demandLevel": "medium",
+      "rating": 4.5,
+      "totalBookings": 1245,
+      "powerOutput": "150kW"
+    },
+    {
+      "id": 2,
+      "name": "Ather Grid Supercharger",
+      "address": "Indiranagar 100 Feet Road, Bengaluru, Karnataka 560038",
+      "location": {
+        "lat": 12.9784,
+        "lng": 77.6401
+      },
+      "distance": 1.2,
+      "isAvailable": true,
+      "chargerTypes": ["Type 2 AC"],
+      "totalChargers": 4,
+      "availableChargers": 3,
+      "pricing": {
+        "Type 2 AC": 80
+      },
+      "averageWaitTime": 10,
+      "peakHours": [7, 8, 17, 18],
+      "demandLevel": "low",
+      "rating": 4.7,
+      "totalBookings": 892,
+      "powerOutput": "22kW"
+    },
+    {
+      "id": 3,
+      "name": "EESL Fast Charging",
+      "address": "Connaught Place, New Delhi 110001",
+      "location": {
+        "lat": 28.6329,
+        "lng": 77.2090
+      },
+      "distance": 2.3,
+      "isAvailable": false,
+      "chargerTypes": ["CCS", "CHAdeMO"],
+      "totalChargers": 8,
+      "availableChargers": 0,
+      "pricing": {
+        "CCS": 130,
+        "CHAdeMO": 160
+      },
+      "averageWaitTime": 35,
+      "peakHours": [9, 10, 11, 19, 20, 21],
+      "demandLevel": "high",
+      "rating": 4.2,
+      "totalBookings": 2134,
+      "powerOutput": "200kW"
+    },
+    {
+      "id": 4,
+      "name": "Fortum Charge & Drive",
+      "address": "DLF Cyber City, Gurugram, Haryana 122002",
+      "location": {
+        "lat": 28.4595,
+        "lng": 77.0878
+      },
+      "distance": 3.1,
+      "isAvailable": true,
+      "chargerTypes": ["CCS", "CHAdeMO", "Type 2 AC"],
+      "totalChargers": 10,
+      "availableChargers": 7,
+      "pricing": {
+        "CCS": 110,
+        "CHAdeMO": 140,
+        "Type 2 AC": 75
+      },
+      "averageWaitTime": 12,
+      "peakHours": [8, 9, 18, 19],
+      "demandLevel": "medium",
+      "rating": 4.6,
+      "totalBookings": 1567,
+      "powerOutput": "180kW"
+    },
+    {
+      "id": 5,
+      "name": "Indian Oil EV Charging",
+      "address": "Marine Drive, Mumbai, Maharashtra 400020",
+      "location": {
+        "lat": 18.9438,
+        "lng": 72.8213
+      },
+      "distance": 1.7,
+      "isAvailable": true,
+      "chargerTypes": ["Type 2 AC"],
+      "totalChargers": 5,
+      "availableChargers": 4,
+      "pricing": {
+        "Type 2 AC": 85
+      },
+      "averageWaitTime": 8,
+      "peakHours": [7, 8, 18, 19],
+      "demandLevel": "low",
+      "rating": 4.4,
+      "totalBookings": 743,
+      "powerOutput": "22kW"
+    },
+    {
+      "id": 6,
+      "name": "Phoenix Marketcity Charging Hub",
+      "address": "Whitefield Main Road, Bengaluru, Karnataka 560048",
+      "location": {
+        "lat": 12.9983,
+        "lng": 77.7311
+      },
+      "distance": 4.2,
+      "isAvailable": false,
+      "chargerTypes": ["CCS", "Type 2 AC"],
+      "totalChargers": 7,
+      "availableChargers": 0,
+      "pricing": {
+        "CCS": 125,
+        "Type 2 AC": 82
+      },
+      "averageWaitTime": 25,
+      "peakHours": [10, 11, 12, 20, 21],
+      "demandLevel": "high",
+      "rating": 4.3,
+      "totalBookings": 1823,
+      "powerOutput": "150kW"
+    }
+  ],
+  "demandPatterns": {
+    "weekday": {
+      "morning": [7, 8, 9],
+      "afternoon": [12, 13, 14],
+      "evening": [17, 18, 19, 20]
+    },
+    "weekend": {
+      "morning": [9, 10, 11],
+      "afternoon": [13, 14, 15],
+      "evening": [18, 19, 20]
+    }
+  },
+  "pricingTrends": {
+    "offPeak": 0.8,
+    "regular": 1.0,
+    "peak": 1.3
+  }
+}

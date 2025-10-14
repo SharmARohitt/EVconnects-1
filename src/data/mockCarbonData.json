@@ -1,0 +1,70 @@
+{
+  "carbonData": {
+    "totalCO2Saved": 996,
+    "equivalentTrees": 49.8,
+    "equivalentMiles": 2490,
+    "comparisonWithPetrol": {
+      "petrolEmissions": 1245,
+      "evEmissions": 249,
+      "savings": 996
+    },
+    "monthlyTrends": [
+      {"month": "Apr 2025", "co2Saved": 76, "trees": 3.8, "distance": 380},
+      {"month": "May 2025", "co2Saved": 88, "trees": 4.4, "distance": 440},
+      {"month": "Jun 2025", "co2Saved": 81.6, "trees": 4.08, "distance": 408},
+      {"month": "Jul 2025", "co2Saved": 100, "trees": 5, "distance": 500},
+      {"month": "Aug 2025", "co2Saved": 94.4, "trees": 4.72, "distance": 472},
+      {"month": "Sep 2025", "co2Saved": 104, "trees": 5.2, "distance": 520},
+      {"month": "Oct 2025", "co2Saved": 142.4, "trees": 7.12, "distance": 712}
+    ],
+    "weeklyTrends": [
+      {"week": "Week 1", "co2Saved": 28, "petrolCost": 2100},
+      {"week": "Week 2", "co2Saved": 32, "petrolCost": 2400},
+      {"week": "Week 3", "co2Saved": 35, "petrolCost": 2625},
+      {"week": "Week 4", "co2Saved": 38, "petrolCost": 2850}
+    ],
+    "insights": [
+      "You've saved 996 kg of CO₂ this year — equivalent to planting 50 trees! 🌳",
+      "By choosing EV, you avoided emitting pollution equal to 2,490 miles of petrol car driving",
+      "Your green choices saved ₹8,970 in fuel costs compared to petrol vehicles",
+      "You're in the top 15% of eco-friendly drivers in your city!"
+    ],
+    "achievements": [
+      {
+        "title": "Green Pioneer",
+        "description": "Saved 100+ kg CO₂",
+        "unlocked": true,
+        "icon": "🌱"
+      },
+      {
+        "title": "Carbon Warrior",
+        "description": "Saved 500+ kg CO₂",
+        "unlocked": true,
+        "icon": "⚔️"
+      },
+      {
+        "title": "Climate Hero",
+        "description": "Saved 1000+ kg CO₂",
+        "unlocked": false,
+        "icon": "🦸"
+      },
+      {
+        "title": "Tree Planter",
+        "description": "Equivalent to 50 trees",
+        "unlocked": true,
+        "icon": "🌳"
+      }
+    ]
+  },
+  "globalImpact": {
+    "totalUsersImpact": 45680,
+    "treesEquivalent": 2284,
+    "citiesRank": [
+      {"city": "Bengaluru", "co2Saved": 12450},
+      {"city": "Delhi", "co2Saved": 10230},
+      {"city": "Mumbai", "co2Saved": 9870},
+      {"city": "Hyderabad", "co2Saved": 7890},
+      {"city": "Chennai", "co2Saved": 5240}
+    ]
+  }
+}

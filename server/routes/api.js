@@ -1,13 +1,32 @@
 const express = require('express');
 const router = express.Router();
 const Station = require('../models/Station');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const config = require('../config');
+
+// Initialize Stripe only if we have a key
+let stripe;
+try {
+  if (process.env.STRIPE_SECRET_KEY) {
+    stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  } else {
+    console.warn('No Stripe API key provided. Stripe functionality will be mocked.');
+  }
+} catch (error) {
+  console.error('Error initializing Stripe:', error);
+}
 
 // Get all stations
 router.get('/stations', async (req, res) => {
   try {
-    const stations = await Station.find();
+    // Try to get stations from MongoDB
+    let stations;
+    try {
+      stations = await Station.find();
+    } catch (dbErr) {
+      // If MongoDB is not connected, use mock data
+      console.log('Using mock data for stations');
+      stations = require('../../src/mockData').stations;
+    }
     res.json(stations);
   } catch (err) {
     console.error('Error fetching stations:', err);
@@ -15,39 +34,34 @@ router.get('/stations', async (req, res) => {
   }
 });
 
-// Get station by ID
-router.get('/stations/:id', async (req, res) => {
-  try {
-    const station = await Station.findById(req.params.id);
-    if (!station) {
-      return res.status(404).json({ error: 'Station not found' });
-    }
-    res.json(station);
-  } catch (err) {
-    console.error('Error fetching station by ID:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Get nearby stations
+// Get nearby stations - this route must be defined BEFORE the :id route
 router.get('/stations/nearby', async (req, res) => {
   try {
     const { lat, lng, radius = 10 } = req.query;
     
-    // Convert radius from km to meters
-    const radiusInMeters = parseInt(radius) * 1000;
-    
-    const stations = await Station.find({
-      location: {
-        $near: {
-          $geometry: {
-            type: 'Point',
-            coordinates: [parseFloat(lng), parseFloat(lat)]
-          },
-          $maxDistance: radiusInMeters
+    let stations;
+    try {
+      // Convert radius from km to meters
+      const radiusInMeters = parseInt(radius) * 1000;
+      
+      stations = await Station.find({
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [parseFloat(lng), parseFloat(lat)]
+            },
+            $maxDistance: radiusInMeters
+          }
         }
-      }
-    });
+      });
+    } catch (dbErr) {
+      // If MongoDB is not connected, use mock data
+      console.log('Using mock data for nearby stations');
+      stations = require('../../src/mockData').stations;
+      // Sort by distance for the mock data (which already has distance property)
+      stations = stations.sort((a, b) => a.distance - b.distance);
+    }
     
     res.json(stations);
   } catch (err) {
@@ -65,15 +79,24 @@ router.post('/create-payment-intent', async (req, res) => {
       return res.status(400).json({ error: 'Valid amount is required' });
     }
     
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // convert to cents
-      currency: 'usd',
-      payment_method_types: ['card'],
-    });
-    
-    res.json({
-      clientSecret: paymentIntent.client_secret,
-    });
+    // Check if Stripe is available
+    if (stripe) {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // convert to cents
+        currency: 'usd',
+        payment_method_types: ['card'],
+      });
+      
+      res.json({
+        clientSecret: paymentIntent.client_secret,
+      });
+    } else {
+      // Mock response for development
+      console.log('Using mock payment intent response');
+      res.json({
+        clientSecret: 'pi_mock_secret_' + Math.random().toString(36).substring(2, 15),
+      });
+    }
   } catch (err) {
     console.error('Error creating payment intent:', err);
     res.status(500).json({ error: err.message });

@@ -1,0 +1,110 @@
+{
+  "analytics": {
+    "overview": {
+      "totalStations": 6,
+      "totalBookings": 9404,
+      "totalRevenue": 1245680,
+      "activeUsers": 3456,
+      "averageRating": 4.45,
+      "growthRate": 23.5
+    },
+    "topStations": [
+      {
+        "id": 3,
+        "name": "EESL Fast Charging",
+        "bookings": 2134,
+        "revenue": 345600,
+        "rating": 4.2,
+        "utilizationRate": 87
+      },
+      {
+        "id": 6,
+        "name": "Phoenix Marketcity Charging Hub",
+        "bookings": 1823,
+        "revenue": 289450,
+        "rating": 4.3,
+        "utilizationRate": 82
+      },
+      {
+        "id": 4,
+        "name": "Fortum Charge & Drive",
+        "bookings": 1567,
+        "revenue": 234500,
+        "rating": 4.6,
+        "utilizationRate": 75
+      }
+    ],
+    "peakHours": [
+      {"hour": "08:00", "bookings": 456, "revenue": 54720},
+      {"hour": "09:00", "bookings": 523, "revenue": 62760},
+      {"hour": "18:00", "bookings": 678, "revenue": 81360},
+      {"hour": "19:00", "bookings": 712, "revenue": 85440},
+      {"hour": "20:00", "bookings": 589, "revenue": 70680}
+    ],
+    "monthlyRevenue": [
+      {"month": "Apr", "revenue": 142000, "bookings": 1180},
+      {"month": "May", "revenue": 156000, "bookings": 1295},
+      {"month": "Jun", "revenue": 149000, "bookings": 1240},
+      {"month": "Jul", "revenue": 168000, "bookings": 1390},
+      {"month": "Aug", "revenue": 174000, "bookings": 1445},
+      {"month": "Sep", "revenue": 182000, "bookings": 1510},
+      {"month": "Oct", "revenue": 195000, "bookings": 1625}
+    ],
+    "chargerTypeUsage": {
+      "CCS": 42,
+      "CHAdeMO": 23,
+      "Type 2 AC": 35
+    },
+    "demandByDay": {
+      "Monday": 1245,
+      "Tuesday": 1189,
+      "Wednesday": 1267,
+      "Thursday": 1312,
+      "Friday": 1456,
+      "Saturday": 1678,
+      "Sunday": 1523
+    },
+    "customerSatisfaction": {
+      "excellent": 65,
+      "good": 25,
+      "average": 8,
+      "poor": 2
+    },
+    "profitableZones": [
+      {
+        "zone": "Bengaluru Tech Park",
+        "stations": 3,
+        "revenue": 456000,
+        "margin": 34
+      },
+      {
+        "zone": "Delhi Business District",
+        "stations": 2,
+        "revenue": 389000,
+        "margin": 31
+      },
+      {
+        "zone": "Mumbai Central",
+        "stations": 1,
+        "revenue": 234000,
+        "margin": 28
+      }
+    ],
+    "aiInsights": [
+      "📈 Revenue increased by 23.5% compared to last quarter",
+      "⚡ Peak demand hours are 6-9 PM weekdays - consider dynamic pricing",
+      "🏆 EESL Fast Charging is the most profitable station with 87% utilization",
+      "💡 CCS chargers are most popular (42%) - expand CCS infrastructure",
+      "📊 Weekend bookings are 18% higher - optimize weekend staffing",
+      "🎯 Customer satisfaction is 90% - maintain current service quality",
+      "💰 Average revenue per booking: ₹132 - optimal for current market",
+      "🌟 Fortum Charge & Drive has highest rating (4.6) - replicate best practices"
+    ],
+    "predictions": {
+      "nextMonthRevenue": 208000,
+      "nextMonthBookings": 1730,
+      "growthForecast": "Expecting 6.7% growth in November",
+      "recommendedExpansion": "Add 2 stations in Hyderabad tech corridor"
+    }
+  }
+}

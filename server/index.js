@@ -20,13 +20,19 @@ const io = new Server(httpServer, {
   }
 });
 
-// Connect to MongoDB
-mongoose.connect(config.mongoURI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => {
-    console.error('MongoDB Connection Error:', err);
-    process.exit(1);
-  });
+// Connect to MongoDB (only if MONGO_URI is configured)
+if (config.mongoURI) {
+  console.log('📊 Attempting MongoDB connection...');
+  mongoose.connect(config.mongoURI)
+    .then(() => console.log('✅ MongoDB Connected Successfully!\n'))
+    .catch(err => {
+      console.error('❌ MongoDB Connection Error:', err.message);
+      console.warn('⚠️  Continuing without MongoDB - using mock data...\n');
+    });
+} else {
+  console.log('📊 MOCK DATA MODE - No MongoDB connection');
+  console.log('✅ Using JSON mock data files for development\n');
+}
 
 // Middleware
 app.use(cors({ origin: config.corsOrigin }));
@@ -75,5 +81,7 @@ io.on('connection', (socket) => {
 
 // Start server
 httpServer.listen(PORT, () => {
-  console.log(`EVconnects server running in ${config.environment} mode on port ${PORT}`);
+  console.log(`\n🚀 EVconnects Server Started!`);
+  console.log(`📍 Running in ${config.environment} mode on port ${PORT}`);
+  console.log(`🌐 Access at: http://localhost:${PORT}\n`);
 });

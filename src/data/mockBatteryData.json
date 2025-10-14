@@ -1,0 +1,45 @@
+{
+  "batteryHealth": {
+    "currentHealth": 92,
+    "capacity": 60,
+    "usableCapacity": 55.2,
+    "degradationRate": 0.8,
+    "totalCycles": 145,
+    "expectedLifespan": 8,
+    "remainingLifespan": 6.8,
+    "lastCheckDate": "2025-10-14",
+    "temperature": 28,
+    "voltageStatus": "Optimal"
+  },
+  "batteryTrends": [
+    {"month": "Apr 2024", "health": 100, "cycles": 15},
+    {"month": "Jun 2024", "health": 99, "cycles": 32},
+    {"month": "Aug 2024", "health": 98, "cycles": 48},
+    {"month": "Oct 2024", "health": 97, "cycles": 65},
+    {"month": "Dec 2024", "health": 96, "cycles": 82},
+    {"month": "Feb 2025", "health": 95, "cycles": 98},
+    {"month": "Apr 2025", "health": 94, "cycles": 115},
+    {"month": "Jun 2025", "health": 93, "cycles": 130},
+    {"month": "Aug 2025", "health": 92.5, "cycles": 140},
+    {"month": "Oct 2025", "health": 92, "cycles": 145}
+  ],
+  "chargingPatterns": {
+    "fastCharging": 35,
+    "slowCharging": 65,
+    "averageChargeLevel": 78,
+    "deepDischarges": 12,
+    "optimalChargeRange": [20, 80]
+  },
+  "recommendations": [
+    "Avoid charging above 80% for daily use to extend battery life",
+    "Try to maintain charge between 20-80% for optimal longevity",
+    "Reduce fast charging frequency - currently 35% of charges",
+    "Battery temperature is optimal. Continue current usage patterns"
+  ],
+  "predictions": {
+    "nextMaintenanceDate": "2026-04-15",
+    "estimatedHealthIn1Year": 89,
+    "estimatedHealthIn2Years": 86,
+    "estimatedHealthIn3Years": 83
+  }
+}

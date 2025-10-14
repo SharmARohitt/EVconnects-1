@@ -6,7 +6,14 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import VehicleSelection from './pages/VehicleSelection';
 import Services from './pages/Services';
+import AIChatbot from './components/AI/AIChatbot';
+import SmartAdvisor from './components/AI/SmartAdvisor';
+import BatteryInsights from './components/AI/BatteryInsights';
+import RouteOptimizer from './components/AI/RouteOptimizer';
+import CarbonAnalyzer from './components/AI/CarbonAnalyzer';
+import Analytics from './components/AI/Analytics';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
 
 // Protected route component to check if user has vehicle info
@@ -61,8 +68,38 @@ function AppRoutes() {
           </RequireVehicleInfo>
         </RequireAuth>
       } />
-      <Route path="/services" element={
-        <Services />
+      <Route path="/services" element={<Services />} />
+      
+      {/* AI Component Routes */}
+      <Route path="/ai-chat" element={
+        <RequireAuth>
+          <AIChatbot />
+        </RequireAuth>
+      } />
+      <Route path="/smart-advisor" element={
+        <RequireAuth>
+          <SmartAdvisor />
+        </RequireAuth>
+      } />
+      <Route path="/battery-health" element={
+        <RequireAuth>
+          <BatteryInsights />
+        </RequireAuth>
+      } />
+      <Route path="/route-optimizer" element={
+        <RequireAuth>
+          <RouteOptimizer />
+        </RequireAuth>
+      } />
+      <Route path="/carbon-footprint" element={
+        <RequireAuth>
+          <CarbonAnalyzer />
+        </RequireAuth>
+      } />
+      <Route path="/admin/analytics" element={
+        <RequireAuth>
+          <Analytics />
+        </RequireAuth>
       } />
     </Routes>
   );
@@ -70,19 +107,21 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          
-          <main className="flex-grow">
-            <AppRoutes />
-          </main>
-          
-          <Footer />
-        </div>
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+            <Navbar />
+            
+            <main className="flex-grow">
+              <AppRoutes />
+            </main>
+            
+            <Footer />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

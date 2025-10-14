@@ -1,0 +1,99 @@
+{
+  "bookings": [
+    {
+      "id": "BK001",
+      "userId": "user123",
+      "stationId": 1,
+      "stationName": "TATA Power Charging Station",
+      "date": "2025-10-10",
+      "time": "14:30",
+      "duration": 2,
+      "chargerType": "CCS",
+      "status": "completed",
+      "cost": 240,
+      "energyCharged": 45,
+      "distanceTraveled": 180,
+      "co2Saved": 36
+    },
+    {
+      "id": "BK002",
+      "userId": "user123",
+      "stationId": 2,
+      "stationName": "Ather Grid Supercharger",
+      "date": "2025-10-08",
+      "time": "09:15",
+      "duration": 1.5,
+      "chargerType": "Type 2 AC",
+      "status": "completed",
+      "cost": 120,
+      "energyCharged": 30,
+      "distanceTraveled": 120,
+      "co2Saved": 24
+    },
+    {
+      "id": "BK003",
+      "userId": "user123",
+      "stationId": 4,
+      "stationName": "Fortum Charge & Drive",
+      "date": "2025-10-05",
+      "time": "18:00",
+      "duration": 1,
+      "chargerType": "CCS",
+      "status": "completed",
+      "cost": 110,
+      "energyCharged": 25,
+      "distanceTraveled": 100,
+      "co2Saved": 20
+    },
+    {
+      "id": "BK004",
+      "userId": "user123",
+      "stationId": 1,
+      "stationName": "TATA Power Charging Station",
+      "date": "2025-10-03",
+      "time": "16:45",
+      "duration": 2,
+      "chargerType": "CHAdeMO",
+      "status": "completed",
+      "cost": 300,
+      "energyCharged": 50,
+      "distanceTraveled": 200,
+      "co2Saved": 40
+    },
+    {
+      "id": "BK005",
+      "userId": "user123",
+      "stationId": 5,
+      "stationName": "Indian Oil EV Charging",
+      "date": "2025-09-28",
+      "time": "11:30",
+      "duration": 1.5,
+      "chargerType": "Type 2 AC",
+      "status": "completed",
+      "cost": 127.5,
+      "energyCharged": 28,
+      "distanceTraveled": 112,
+      "co2Saved": 22.4
+    }
+  ],
+  "userStats": {
+    "totalBookings": 47,
+    "totalEnergyCharged": 1245,
+    "totalDistanceTraveled": 4980,
+    "totalCO2Saved": 996,
+    "averageChargingDuration": 1.8,
+    "favoriteStation": "TATA Power Charging Station",
+    "mostUsedChargerType": "CCS",
+    "totalSpent": 5640,
+    "memberSince": "2024-06-15"
+  },
+  "chargingHistory": [
+    {"month": "Apr 2025", "energy": 95, "cost": 420, "co2Saved": 76},
+    {"month": "May 2025", "energy": 110, "cost": 485, "co2Saved": 88},
+    {"month": "Jun 2025", "energy": 102, "cost": 450, "co2Saved": 81.6},
+    {"month": "Jul 2025", "energy": 125, "cost": 550, "co2Saved": 100},
+    {"month": "Aug 2025", "energy": 118, "cost": 520, "co2Saved": 94.4},
+    {"month": "Sep 2025", "energy": 130, "cost": 575, "co2Saved": 104},
+    {"month": "Oct 2025", "energy": 178, "cost": 770, "co2Saved": 142.4}
+  ]
+}

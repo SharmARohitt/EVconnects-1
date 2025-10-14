@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import HeroSection from '../components/HeroSection';
 import StationsList from '../components/StationsList';
+import AIChatbot from '../components/AI/AIChatbot';
 import mockStations from '../mockData';
 import { HiLightningBolt, HiClock, HiLocationMarker, HiDeviceMobile, HiShieldCheck, HiStar } from 'react-icons/hi';
 
@@ -226,6 +227,9 @@ const Home = () => {
           </>
         )}
       </div>
+      
+      {/* AI Chatbot - Always available */}
+      <AIChatbot />
     </>
   );
 };
