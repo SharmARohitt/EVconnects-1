@@ -128,8 +128,15 @@ const AIChatbot = () => {
             <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 p-4 flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
-                    <HiLightningBolt className="h-6 w-6 text-emerald-600" />
+                  <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                    {/* EV Logo SVG */}
+                    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" fill="#059669" stroke="#059669" strokeWidth="2"/>
+                      <path d="M8 10H16L14 14H10L8 10Z" fill="white"/>
+                      <circle cx="12" cy="12" r="1.5" fill="#059669"/>
+                      <path d="M9.5 8.5L14.5 8.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                      <path d="M9.5 15.5L14.5 15.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
                   </div>
                   <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-400 rounded-full border-2 border-white"></div>
                 </div>
