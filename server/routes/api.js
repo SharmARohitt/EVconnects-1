@@ -15,36 +15,160 @@ try {
   console.error('Error initializing Stripe:', error);
 }
 
-// Get all stations
+// Get all stations with filtering and search
 router.get('/stations', async (req, res) => {
   try {
-    // Try to get stations from MongoDB
+    const { 
+      search, 
+      city, 
+      state, 
+      amenities, 
+      chargerType, 
+      availability,
+      minRating,
+      sortBy = 'name',
+      order = 'asc',
+      page = 1,
+      limit = 50
+    } = req.query;
+
     let stations;
     try {
-      stations = await Station.find();
+      // Build MongoDB query
+      let query = { status: 'active' };
+      
+      // Search by name or address
+      if (search) {
+        query.$or = [
+          { name: { $regex: search, $options: 'i' } },
+          { 'address.street': { $regex: search, $options: 'i' } },
+          { 'address.city': { $regex: search, $options: 'i' } }
+        ];
+      }
+      
+      // Filter by city
+      if (city) {
+        query['address.city'] = { $regex: city, $options: 'i' };
+      }
+      
+      // Filter by state
+      if (state) {
+        query['address.state'] = { $regex: state, $options: 'i' };
+      }
+      
+      // Filter by amenities
+      if (amenities) {
+        const amenityList = amenities.split(',');
+        query.amenities = { $in: amenityList };
+      }
+      
+      // Filter by charger type
+      if (chargerType) {
+        query['chargers.type'] = chargerType;
+      }
+      
+      // Filter by availability
+      if (availability === 'true') {
+        query['chargers.status'] = 'available';
+      }
+      
+      // Filter by minimum rating
+      if (minRating) {
+        query['rating.average'] = { $gte: parseFloat(minRating) };
+      }
+      
+      // Build sort object
+      let sort = {};
+      if (sortBy === 'rating') {
+        sort['rating.average'] = order === 'desc' ? -1 : 1;
+      } else if (sortBy === 'name') {
+        sort.name = order === 'desc' ? -1 : 1;
+      } else if (sortBy === 'created') {
+        sort.createdAt = order === 'desc' ? -1 : 1;
+      }
+      
+      // Execute query with pagination
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      stations = await Station.find(query)
+        .populate('chargers')
+        .sort(sort)
+        .skip(skip)
+        .limit(parseInt(limit));
+        
+      const total = await Station.countDocuments(query);
+      
+      res.json({
+        stations,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      });
+      
     } catch (dbErr) {
       // If MongoDB is not connected, use mock data
       console.log('Using mock data for stations');
-      stations = require('../../src/mockData').stations;
+      const mockStations = require('../../src/data/mockStations.json') || [];
+      
+      // Apply basic filtering to mock data
+      let filteredStations = mockStations;
+      
+      if (search) {
+        filteredStations = filteredStations.filter(station =>
+          station.name.toLowerCase().includes(search.toLowerCase()) ||
+          station.address.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      
+      if (city) {
+        filteredStations = filteredStations.filter(station =>
+          station.address.toLowerCase().includes(city.toLowerCase())
+        );
+      }
+      
+      res.json({
+        stations: filteredStations,
+        pagination: {
+          page: 1,
+          limit: filteredStations.length,
+          total: filteredStations.length,
+          pages: 1
+        }
+      });
     }
-    res.json(stations);
   } catch (err) {
     console.error('Error fetching stations:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Get nearby stations - this route must be defined BEFORE the :id route
+// Get nearby stations with enhanced filtering
 router.get('/stations/nearby', async (req, res) => {
   try {
-    const { lat, lng, radius = 10 } = req.query;
+    const { 
+      lat, 
+      lng, 
+      radius = 10,
+      chargerType,
+      amenities,
+      availability,
+      minRating
+    } = req.query;
+    
+    if (!lat || !lng) {
+      return res.status(400).json({ error: 'Latitude and longitude are required' });
+    }
     
     let stations;
     try {
       // Convert radius from km to meters
       const radiusInMeters = parseInt(radius) * 1000;
       
-      stations = await Station.find({
+      // Build query with location and filters
+      let query = {
+        status: 'active',
         location: {
           $near: {
             $geometry: {
@@ -54,18 +178,80 @@ router.get('/stations/nearby', async (req, res) => {
             $maxDistance: radiusInMeters
           }
         }
-      });
+      };
+      
+      // Add additional filters
+      if (chargerType) {
+        query['chargers.type'] = chargerType;
+      }
+      
+      if (amenities) {
+        const amenityList = amenities.split(',');
+        query.amenities = { $in: amenityList };
+      }
+      
+      if (availability === 'true') {
+        query['chargers.status'] = 'available';
+      }
+      
+      if (minRating) {
+        query['rating.average'] = { $gte: parseFloat(minRating) };
+      }
+      
+      stations = await Station.find(query)
+        .populate('chargers')
+        .limit(50);
+        
     } catch (dbErr) {
       // If MongoDB is not connected, use mock data
       console.log('Using mock data for nearby stations');
-      stations = require('../../src/mockData').stations;
-      // Sort by distance for the mock data (which already has distance property)
-      stations = stations.sort((a, b) => a.distance - b.distance);
+      const mockStations = require('../../src/data/mockStations.json') || [];
+      
+      // Sort by distance for the mock data (if it has distance property)
+      stations = mockStations
+        .filter(station => station.distance <= parseInt(radius))
+        .sort((a, b) => (a.distance || 0) - (b.distance || 0));
     }
     
     res.json(stations);
   } catch (err) {
     console.error('Error fetching nearby stations:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get station by ID
+router.get('/stations/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    let station;
+    try {
+      station = await Station.findById(id)
+        .populate('chargers')
+        .populate({
+          path: 'reviews.userId',
+          select: 'firstName lastName avatar'
+        });
+        
+      if (!station) {
+        return res.status(404).json({ error: 'Station not found' });
+      }
+      
+    } catch (dbErr) {
+      // If MongoDB is not connected, use mock data
+      console.log('Using mock data for station details');
+      const mockStations = require('../../src/data/mockStations.json') || [];
+      station = mockStations.find(s => s.id === id || s._id === id);
+      
+      if (!station) {
+        return res.status(404).json({ error: 'Station not found' });
+      }
+    }
+    
+    res.json(station);
+  } catch (err) {
+    console.error('Error fetching station:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

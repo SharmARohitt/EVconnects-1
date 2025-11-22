@@ -1,3 +1,31 @@
+# EVConnects - EV Charging Station Finder
 # https://www.robotstxt.org/robotstxt.html
+
 User-agent: *
-Disallow:
+Allow: /
+
+# Allow crawling of main pages
+Allow: /about
+Allow: /contact
+Allow: /services
+Allow: /stations
+Allow: /signup
+Allow: /login
+
+# Disallow user-specific pages
+Disallow: /profile
+Disallow: /bookings
+Disallow: /admin
+
+# Disallow AI component direct access
+Disallow: /ai-chat
+Disallow: /smart-advisor
+Disallow: /battery-health
+Disallow: /route-optimizer
+Disallow: /carbon-footprint
+
+# Sitemap location
+Sitemap: https://evconnects.com/sitemap.xml
+
+# Crawl-delay for better server performance
+Crawl-delay: 1

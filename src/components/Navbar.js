@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HiMenu, HiX, HiUserCircle, HiLogout, HiShoppingCart } from 'react-icons/hi';
+import { HiMenu, HiX, HiUserCircle, HiLogout, HiShoppingCart, HiUser, HiCalendar } from 'react-icons/hi';
 import { BsSunFill, BsMoonStarsFill } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -9,6 +9,7 @@ import mainLogo from '../assets/Mainlogo.png';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAIMenuOpen, setIsAIMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -64,13 +65,10 @@ const Navbar = () => {
           <div className="hidden md:flex items-center justify-center flex-1">
             <div className="ml-10 flex items-baseline space-x-4">
               <Link to="/" className="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">Home</Link>
-              <button 
-                onClick={() => scrollToSection('about')}
-                className="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium bg-transparent transition-colors"
-              >
-                About
-              </button>
+              <Link to="/about" className="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">About</Link>
+              <Link to="/stations" className="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">Stations</Link>
               <Link to="/services" className="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">Services</Link>
+              <Link to="/contact" className="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">Contact</Link>
               
               {/* AI Features Dropdown */}
               {user && (
@@ -153,7 +151,7 @@ const Navbar = () => {
             </Link>
             
             {user ? (
-              <div className="flex items-center space-x-3">
+              <div className="relative flex items-center space-x-3">
                 <div className="hidden md:flex flex-col items-end">
                   <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
                     {user.firstName || 'User'}
@@ -164,13 +162,43 @@ const Navbar = () => {
                     </span>
                   )}
                 </div>
-                <button 
-                  onClick={handleLogout}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
-                >
-                  <HiLogout className="mr-2 h-5 w-5" />
-                  Logout
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="p-2 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+                  >
+                    <HiUserCircle className="h-8 w-8" />
+                  </button>
+                  
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                      <Link 
+                        to="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <HiUser className="inline mr-2 h-4 w-4" />
+                        My Profile
+                      </Link>
+                      <Link 
+                        to="/bookings"
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <HiCalendar className="inline mr-2 h-4 w-4" />
+                        My Bookings
+                      </Link>
+                      <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                      <button 
+                        onClick={handleLogout}
+                        className="w-full text-left block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      >
+                        <HiLogout className="inline mr-2 h-4 w-4" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <Link 

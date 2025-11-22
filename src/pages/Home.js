@@ -1,14 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeroSection from '../components/HeroSection';
 import StationsList from '../components/StationsList';
 import AIChatbot from '../components/AI/AIChatbot';
+import GoogleMapsEVFinder from '../components/GoogleMapsEVFinder';
+import { HomeSEO } from '../components/SEO';
 import mockStations from '../mockData';
-import { HiLightningBolt, HiClock, HiLocationMarker, HiDeviceMobile, HiShieldCheck, HiStar } from 'react-icons/hi';
+import { HiLightningBolt, HiClock, HiLocationMarker, HiDeviceMobile, HiShieldCheck, HiStar, HiMap } from 'react-icons/hi';
 
 const Home = () => {
   const [stations, setStations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [userLocation, setUserLocation] = useState({ lat: 28.6139, lng: 77.2090 }); // Default to Delhi
+  const [searchRadius, setSearchRadius] = useState(25);
+  const [showMapView, setShowMapView] = useState(false);
+
+  // Get user's current location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.log('Location access denied, using default location (Delhi)');
+        }
+      );
+    }
+  }, []);
 
   const handleSearch = (query) => {
     setIsLoading(true);
@@ -23,6 +45,7 @@ const Home = () => {
 
   return (
     <>
+      <HomeSEO />
       <HeroSection onSearch={handleSearch} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,6 +113,68 @@ const Home = () => {
               </div>
             </section>
             
+            {/* Interactive Map Section */}
+            <section className="py-16 bg-white dark:bg-gray-900 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    Find EV Stations Near You
+                  </h2>
+                  <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+                    Discover charging stations within 100+ km radius using our advanced Google Maps integration
+                  </p>
+                  <div className="flex justify-center space-x-4">
+                    <button
+                      onClick={() => setShowMapView(false)}
+                      className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                        !showMapView 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      List View
+                    </button>
+                    <button
+                      onClick={() => setShowMapView(true)}
+                      className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                        showMapView 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      <HiMap className="inline h-5 w-5 mr-2" />
+                      Map View
+                    </button>
+                  </div>
+                </div>
+
+                {showMapView ? (
+                  <GoogleMapsEVFinder
+                    userLocation={userLocation}
+                    searchRadius={searchRadius}
+                    onRadiusChange={setSearchRadius}
+                  />
+                ) : (
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+                    <HiLocationMarker className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      Switch to Map View
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
+                      Use our interactive Google Maps to find all EV charging stations within your selected radius
+                    </p>
+                    <button
+                      onClick={() => setShowMapView(true)}
+                      className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <HiMap className="h-5 w-5 mr-2" />
+                      Open Map View
+                    </button>
+                  </div>
+                )}
+              </div>
+            </section>
+
             {/* Why Use EVConnects Section */}
             <section id="why-choose-us" className="py-16 bg-gray-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
               <div className="max-w-7xl mx-auto">
