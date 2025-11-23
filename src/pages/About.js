@@ -25,19 +25,19 @@ const About = () => {
     {
       name: 'Rohit Sharma',
       position: 'CEO & Co-Founder',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80',
+      image: '/images/team/rohit-sharma.jpg',
       description: 'Visionary entrepreneur leading EVConnects mission to revolutionize India\'s EV charging infrastructure. Passionate about sustainable technology and electric mobility solutions.'
     },
     {
       name: 'Kumar Utkarsh',
       position: 'CTO & Co-Founder',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80',
+      image: '/images/team/kumar-utkarsh.jpg',
       description: 'Tech innovator and architect behind EVConnects AI-powered platform. Expert in IoT, machine learning, and smart charging infrastructure development.'
     },
     {
       name: 'Lakshit Kumar',
       position: 'Head of Product & Strategy',
-      image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=256&q=80',
+      image: '/images/team/lakshit-kumar.png',
       description: 'Product strategist driving user experience innovation and market expansion. Focused on making EV charging seamless and accessible for all Indians.'
     },
     {
@@ -214,14 +214,88 @@ const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="relative"
+              className="relative flex items-center justify-center"
             >
-              <img
-                src="https://images.unsplash.com/photo-1558618644-fcd25c85cd64?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                alt="Electric car charging"
-                className="rounded-2xl shadow-2xl"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-emerald-600/20 to-transparent rounded-2xl"></div>
+              <div className="relative bg-gradient-to-br from-emerald-500 via-blue-500 to-indigo-600 p-12 rounded-3xl shadow-2xl">
+                {/* EVConnects Main Logo */}
+                <div className="flex items-center justify-center w-64 h-64 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                  <div className="relative">
+                    {/* Main Logo Container */}
+                    <div className="flex items-center justify-center w-48 h-48 bg-white rounded-2xl shadow-lg p-8">
+                      <img 
+                        src="/evconnects-logo.png" 
+                        alt="EVConnects Logo" 
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    
+                    {/* Decorative Accents */}
+                    <div className="absolute -top-3 -right-3 w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+                      <HiLightningBolt className="w-6 h-6 text-yellow-800" />
+                    </div>
+                    <div className="absolute -bottom-3 -left-3 w-8 h-8 bg-emerald-400 rounded-full flex items-center justify-center shadow-lg">
+                      <HiLightningBolt className="w-4 h-4 text-emerald-800" />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Background Patterns */}
+                <div className="absolute inset-0 rounded-3xl overflow-hidden">
+                  <div className="absolute top-4 left-4 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
+                  <div className="absolute bottom-4 right-4 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
+                  <div className="absolute top-1/2 left-0 w-2 h-32 bg-white/20 rounded-full transform -translate-y-1/2"></div>
+                  <div className="absolute top-1/2 right-0 w-2 h-24 bg-white/20 rounded-full transform -translate-y-1/2"></div>
+                </div>
+                
+                {/* Company Branding */}
+                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full border border-white/30">
+                    <span className="text-white font-bold text-lg tracking-wider">EVConnects</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Floating Animation Elements */}
+              <div className="absolute -z-10 inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                  animate={{ 
+                    y: [0, -20, 0],
+                    rotate: [0, 5, 0]
+                  }}
+                  transition={{ 
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute top-12 right-12 w-8 h-8 bg-emerald-400/30 rounded-full"
+                />
+                <motion.div
+                  animate={{ 
+                    y: [0, 15, 0],
+                    rotate: [0, -3, 0]
+                  }}
+                  transition={{ 
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1
+                  }}
+                  className="absolute bottom-16 left-8 w-6 h-6 bg-blue-400/30 rounded-full"
+                />
+                <motion.div
+                  animate={{ 
+                    y: [0, -10, 0],
+                    x: [0, 5, 0]
+                  }}
+                  transition={{ 
+                    duration: 7,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 2
+                  }}
+                  className="absolute top-32 left-16 w-4 h-4 bg-yellow-400/40 rounded-full"
+                />
+              </div>
             </motion.div>
           </div>
         </div>
