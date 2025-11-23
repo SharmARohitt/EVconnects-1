@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HiLocationMarker, HiCheck, HiX, HiClock, HiCurrencyRupee, HiStar } from 'react-icons/hi';
-import { HiLightningBolt, HiCalendar, HiXCircle, HiPhone, HiCreditCard } from 'react-icons/hi';
+import { HiLightningBolt, HiCalendar, HiXCircle, HiPhone, HiCreditCard, HiCheckCircle, HiTicket } from 'react-icons/hi';
 import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise, calculatePrice } from '../services/stripeService';
 import PaymentForm from './PaymentForm';
@@ -29,6 +30,8 @@ const StationCard = ({ station }) => {
     error: null,
     processing: false
   });
+  const [showSuccessSplash, setShowSuccessSplash] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState(null);
 
   // Get pricing for each charger type from station data
   const getPricing = (chargerType) => {
@@ -55,17 +58,40 @@ const StationCard = ({ station }) => {
     setShowPaymentModal(true);
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = (paymentDetails = {}) => {
+    // Generate booking confirmation details
+    const booking = {
+      bookingId: 'EVC' + Date.now().toString().slice(-6),
+      stationName: name,
+      chargerType: selectedChargerType,
+      duration: bookingHours,
+      amount: calculatePrice(selectedChargerType, bookingHours),
+      paymentId: paymentDetails.transactionId || 'PAY' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+      bookingTime: new Date().toLocaleString(),
+      estimatedStartTime: new Date(Date.now() + 15 * 60000).toLocaleString(), // 15 minutes from now
+      address: address
+    };
+    
+    setBookingDetails(booking);
     setPaymentStatus({
       success: true,
       error: null,
       processing: false
     });
     
+    // Show splash screen after a brief delay
     setTimeout(() => {
       setShowPaymentModal(false);
-      alert('Payment successful! Your slot has been booked.');
-    }, 1500);
+      setShowSuccessSplash(true);
+      
+      // Auto-close splash screen after 4 seconds
+      setTimeout(() => {
+        setShowSuccessSplash(false);
+        // Reset states
+        setPaymentStatus({ success: false, error: null, processing: false });
+        setBookingDetails(null);
+      }, 4000);
+    }, 1000);
   };
 
   const handlePaymentError = (errorMessage) => {
@@ -412,6 +438,200 @@ const StationCard = ({ station }) => {
           </div>
         </div>
       )}
+
+      {/* Success Splash Screen */}
+      <AnimatePresence>
+        {showSuccessSplash && bookingDetails && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: -20 }}
+              transition={{ 
+                type: "spring", 
+                damping: 25, 
+                stiffness: 120,
+                duration: 0.6
+              }}
+              className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl border border-gray-200 dark:border-gray-700 relative overflow-hidden"
+            >
+              {/* Success Animation Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-emerald-400/5 to-green-500/10"></div>
+              
+              {/* Confetti Animation */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {[...Array(15)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2 h-2 bg-emerald-400 rounded-full"
+                    initial={{
+                      x: Math.random() * 400 - 200,
+                      y: -10,
+                      rotate: 0,
+                      opacity: 0.8
+                    }}
+                    animate={{
+                      y: 400,
+                      rotate: 360,
+                      opacity: 0
+                    }}
+                    transition={{
+                      duration: 2 + Math.random() * 2,
+                      delay: Math.random() * 1,
+                      ease: "easeOut"
+                    }}
+                  />
+                ))}
+              </div>
+              
+              <div className="relative z-10 text-center">
+                {/* Success Icon */}
+                <motion.div
+                  initial={{ scale: 0, rotate: 180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.2, type: "spring", damping: 15 }}
+                  className="mb-6"
+                >
+                  <div className="mx-auto w-20 h-20 bg-emerald-500 dark:bg-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                    <HiCheckCircle className="w-12 h-12 text-white" />
+                  </div>
+                </motion.div>
+
+                {/* Success Message */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <h2 className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">
+                    Payment Successful!
+                  </h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+                    Your charging slot has been booked
+                  </p>
+                </motion.div>
+
+                {/* Booking Details Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 border border-emerald-200 dark:border-emerald-700 text-left"
+                >
+                  <div className="flex items-center mb-3">
+                    <HiTicket className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mr-2" />
+                    <span className="font-semibold text-emerald-800 dark:text-emerald-300">Booking Confirmation</span>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Booking ID:</span>
+                      <span className="font-mono text-emerald-700 dark:text-emerald-300">{bookingDetails.bookingId}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Station:</span>
+                      <span className="font-medium text-gray-800 dark:text-gray-200 text-right max-w-[60%] truncate">
+                        {bookingDetails.stationName}
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Charger Type:</span>
+                      <span className="font-medium text-gray-800 dark:text-gray-200">{bookingDetails.chargerType}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Duration:</span>
+                      <span className="font-medium text-gray-800 dark:text-gray-200">{bookingDetails.duration}h</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Amount Paid:</span>
+                      <span className="font-bold text-emerald-700 dark:text-emerald-300">₹{bookingDetails.amount}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Payment ID:</span>
+                      <span className="font-mono text-xs text-gray-700 dark:text-gray-300">{bookingDetails.paymentId}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                    <div className="flex items-center">
+                      <HiClock className="w-4 h-4 text-blue-600 dark:text-blue-400 mr-2" />
+                      <div className="text-xs">
+                        <div className="text-blue-800 dark:text-blue-300 font-medium">
+                          Estimated Start Time
+                        </div>
+                        <div className="text-blue-600 dark:text-blue-400">
+                          {bookingDetails.estimatedStartTime}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Action Buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="mt-6 space-y-3"
+                >
+                  <button
+                    onClick={() => setShowSuccessSplash(false)}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    Continue
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      // Generate booking receipt
+                      const receiptText = `
+EV CHARGING BOOKING RECEIPT
+==========================
+Booking ID: ${bookingDetails.bookingId}
+Station: ${bookingDetails.stationName}
+Address: ${bookingDetails.address}
+Charger Type: ${bookingDetails.chargerType}
+Duration: ${bookingDetails.duration} hour(s)
+Amount Paid: ₹${bookingDetails.amount}
+Payment ID: ${bookingDetails.paymentId}
+Booking Time: ${bookingDetails.bookingTime}
+Estimated Start: ${bookingDetails.estimatedStartTime}
+
+Thank you for choosing EVconnects!
+                      `.trim();
+                      
+                      navigator.clipboard.writeText(receiptText).then(() => {
+                        const notification = document.createElement('div');
+                        notification.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm z-[70]';
+                        notification.textContent = 'Receipt copied to clipboard!';
+                        document.body.appendChild(notification);
+                        setTimeout(() => {
+                          if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                          }
+                        }, 2000);
+                      });
+                    }}
+                    className="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-6 rounded-lg transition-colors"
+                  >
+                    Copy Receipt
+                  </button>
+                </motion.div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -39,10 +39,18 @@ const PaymentForm = ({ amount, onPaymentSuccess, onPaymentError, onCancel }) => 
     // In a real implementation, you would create a payment intent on your server
     // and return the client secret. Here we're mocking it for demo purposes.
     try {
-      // Mock a successful payment
+      // Mock a successful payment with transaction details
       setTimeout(() => {
+        const paymentDetails = {
+          transactionId: 'TXN' + Date.now().toString().slice(-8),
+          paymentMethod: 'Card',
+          status: 'completed',
+          timestamp: new Date().toISOString(),
+          amount: amount
+        };
+        
         setProcessing(false);
-        onPaymentSuccess();
+        onPaymentSuccess(paymentDetails);
       }, 2000);
       
       // In a real implementation, you would use the client secret like this:
