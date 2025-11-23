@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import { HiLocationMarker, HiCheck, HiX, HiClock, HiCurrencyRupee } from 'react-icons/hi';
+import { HiLocationMarker, HiCheck, HiX, HiClock, HiCurrencyRupee, HiStar } from 'react-icons/hi';
 import { HiLightningBolt, HiCalendar, HiXCircle, HiPhone, HiCreditCard } from 'react-icons/hi';
 import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise, calculatePrice } from '../services/stripeService';
 import PaymentForm from './PaymentForm';
 
 const StationCard = ({ station }) => {
-  const { name, address, distance, isAvailable, chargerTypes } = station;
+  const { 
+    name, 
+    address, 
+    distance, 
+    isAvailable, 
+    chargerTypes, 
+    rating, 
+    totalChargers, 
+    availableChargers, 
+    pricing,
+    amenities,
+    powerOutput,
+    demandLevel
+  } = station;
   const [showModal, setShowModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedChargerType, setSelectedChargerType] = useState(chargerTypes[0]);
@@ -17,18 +30,16 @@ const StationCard = ({ station }) => {
     processing: false
   });
 
-  // Generate pricing for each charger type (in rupees/hr)
+  // Get pricing for each charger type from station data
   const getPricing = (chargerType) => {
-    switch(chargerType) {
-      case 'CCS':
-        return '₹120/hr';
-      case 'CHAdeMO':
-        return '₹150/hr';
-      case 'Type 2 AC':
-        return '₹80/hr';
-      default:
-        return '₹100/hr';
-    }
+    const price = pricing && pricing[chargerType] ? pricing[chargerType] : {
+      'CCS': 120,
+      'CHAdeMO': 150,
+      'Type 2 AC': 80,
+      'Type 2': 80
+    }[chargerType] || 100;
+    
+    return `₹${price}/hr`;
   };
 
   // Additional station details for the modal
@@ -69,52 +80,123 @@ const StationCard = ({ station }) => {
   const totalPrice = calculatePrice(selectedChargerType, bookingHours);
 
   return (
-    <>
+    <div>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-2xl border border-gray-200 dark:border-gray-700 hover:shadow-xl dark:hover:shadow-emerald-900/50 transition-all duration-300 overflow-hidden">
         <div className="p-5">
-          <div className="flex justify-between items-start">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{name}</h3>
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              isAvailable ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-700'
-            }`}>
-              {isAvailable ? (
-                <>
-                  <HiCheck className="mr-1" /> Available
-                </>
-              ) : (
-                <>
-                  <HiX className="mr-1" /> Occupied
-                </>
+          <div className="flex justify-between items-start mb-2">
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{name}</h3>
+              {rating && (
+                <div className="flex items-center">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <HiStar
+                        key={i}
+                        className={`h-4 w-4 ${
+                          i < Math.floor(rating)
+                            ? 'text-yellow-400 fill-current'
+                            : 'text-gray-300 dark:text-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="ml-1 text-sm text-gray-600 dark:text-gray-400">
+                    {rating} ({Math.floor(Math.random() * 200) + 50} reviews)
+                  </span>
+                </div>
               )}
-            </span>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                isAvailable ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-700'
+              }`}>
+                {isAvailable ? (
+                  <>
+                    <HiCheck className="mr-1 h-3 w-3" /> Available
+                  </>
+                ) : (
+                  <>
+                    <HiX className="mr-1 h-3 w-3" /> Occupied
+                  </>
+                )}
+              </span>
+              {totalChargers && (
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {availableChargers || 0}/{totalChargers} free
+                </span>
+              )}
+            </div>
           </div>
           
           <div className="mt-2 flex items-start text-gray-600 dark:text-gray-300">
-            <HiLocationMarker className="mt-0.5 mr-1 flex-shrink-0 h-4 w-4 text-emerald-600 dark:text-emerald-500" />
+            <HiLocationMarker className="mt-0.5 mr-2 flex-shrink-0 h-4 w-4 text-emerald-600 dark:text-emerald-500" />
             <span className="text-sm">{address}</span>
           </div>
           
-          <div className="mt-4">
-            <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+          <div className="mt-3 flex items-center justify-between text-sm">
+            <div className="flex items-center text-gray-600 dark:text-gray-300">
               <span className="font-medium">Distance:</span>
-              <span className="ml-1">{distance} miles</span>
+              <span className="ml-1">{distance} km away</span>
             </div>
+            {demandLevel && (
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                demandLevel === 'low' ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' :
+                demandLevel === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300' :
+                'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300'
+              }`}>
+                {demandLevel} demand
+              </span>
+            )}
+          </div>
+          
+          {powerOutput && (
+            <div className="mt-2 flex items-center text-sm text-gray-600 dark:text-gray-300">
+              <HiLightningBolt className="mr-1 h-4 w-4 text-emerald-600 dark:text-emerald-500" />
+              <span className="font-medium">Max Power:</span>
+              <span className="ml-1">{powerOutput}</span>
+            </div>
+          )}
             
-            <div className="mt-2">
+            <div className="mt-3">
               <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Charger Types:</span>
-              <div className="mt-1 flex flex-wrap gap-2">
-                {chargerTypes.map((type, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                  >
-                    <HiLightningBolt className="mr-1" />
-                    {type}
-                  </span>
-                ))}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {chargerTypes.map((type, index) => {
+                  const price = pricing && pricing[type] ? `₹${pricing[type]}/hr` : getPricing(type);
+                  return (
+                    <div key={index} className="flex flex-col">
+                      <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                        <HiLightningBolt className="mr-1 h-3 w-3" />
+                        {type}
+                      </span>
+                      <span className="text-xs text-center mt-1 text-gray-500 dark:text-gray-400">
+                        {price}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          </div>
+            
+            {amenities && amenities.length > 0 && (
+              <div className="mt-3">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Amenities:</span>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {amenities.slice(0, 4).map((amenity, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    >
+                      {amenity}
+                    </span>
+                  ))}
+                  {amenities.length > 4 && (
+                    <span className="text-xs text-gray-500 dark:text-gray-400 px-2 py-1">
+                      +{amenities.length - 4} more
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           
           <div className="mt-4">
             <button
@@ -330,7 +412,7 @@ const StationCard = ({ station }) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
